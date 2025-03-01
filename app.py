@@ -1,17 +1,3 @@
-# from google import genai
-# from google.genai import types
-#
-# import PIL.Image
-#
-# image = PIL.Image.open('image.png')
-#
-# client = genai.Client(api_key="AIzaSyCGRagRWD_XWzdlR6ZGgJfyeKZM6agwMw4")
-# response = client.models.generate_content(
-#     model="gemini-2.0-flash",
-#     contents=["This is an image from my lecture. Can you please explain it to me?", image])
-#
-# with open ("output.txt", 'w') as file:
-#     file.write(response.text)
 
 from flask import Flask, render_template, request
 from google import genai
@@ -37,12 +23,17 @@ def index():
             <input type="file" name="file" accept="image/*" required style="display: none;">
         </div>
         <br>
-        <input type="submit" value="Analyze Image">
+        <p id="confirmation" style="display: none; color: green;">Image uploaded successfully!</p>
+        <input type="submit" value="Analyze Image" id="submitButton">
+        <p id="processing" style="display: none;">Processing...</p>
     </form>
 
     <script>
         const dropArea = document.getElementById('dropArea');
         const fileInput = dropArea.querySelector('input[type="file"]');
+        const confirmation = document.getElementById('confirmation');
+        const submitButton = document.getElementById('submitButton');
+        const processing = document.getElementById('processing');
 
         dropArea.addEventListener('click', () => fileInput.click());
 
@@ -60,6 +51,11 @@ def index():
             dropArea.style.border = '2px dashed #ccc';
             const file = e.dataTransfer.files[0];
             fileInput.files = e.dataTransfer.files;
+            confirmation.style.display = 'block';
+        });
+
+        submitButton.addEventListener('click', () => {
+            processing.style.display = 'block';
         });
     </script>
     '''
@@ -95,3 +91,4 @@ def analyze():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
